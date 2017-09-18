@@ -40,7 +40,7 @@ func (r *PaymentService) Create(paymentRequest *PaymentRequest) (*PaymentRespons
 		return nil, err
 	}
 
-	res, err := r.client.Perform(req, nil)
+	res, err := r.client.Perform(req)
 	if err != nil {
 		return nil, err
 	}
@@ -48,13 +48,14 @@ func (r *PaymentService) Create(paymentRequest *PaymentRequest) (*PaymentRespons
 	defer res.Body.Close()
 	responseData, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return nil, fmt.Errorf("Could not read the returned data")
+		return nil, fmt.Errorf("could not read the returned data")
 	}
 
+	fmt.Println(string(responseData))
 	paymentResponse := new(PaymentResponse)
 	err = xml.Unmarshal(responseData, paymentResponse)
 	if err != nil {
-		return nil, fmt.Errorf("Could not parse response data")
+		return nil, fmt.Errorf("could not parse response data")
 	}
 
 	return paymentResponse, nil
