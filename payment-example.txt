@@ -1,0 +1,144 @@
+HTTP POST  https://test.api.securepay.com.au/xmlapi/payment
+
+Merchant ID: ABC0001
+Test transaction password:
+
+All fields:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<SecurePayMessage>
+  <MessageInfo>
+    <messageID>364c7a67b8175ea3fc347314f294e</messageID>
+    <messageTimestamp>2017120901135000000+0</messageTimestamp>
+    <timeoutValue>60</timeoutValue>
+    <apiVersion>xml-4.2</apiVersion>
+  </MessageInfo>
+  <MerchantInfo>
+    <merchantID>ABC0001</merchantID>
+    <password>abc123</password>
+  </MerchantInfo>
+  <RequestType>Payment</RequestType>
+  <Payment>
+    <TxnList count="1">
+      <Txn ID="1">
+        <txnKey/>
+        <txnType>0</txnType>
+        <txnSource>23</txnSource>
+        <txnChannel>0</txnChannel>
+        <amount>100</amount>
+        <currency>AUD</currency>
+        <purchaseOrderNo>spnv0026.corporate-test</purchaseOrderNo>
+        <payorId/>
+        <txnId/>
+        <preauthId/>
+        <SurchargeInfo>
+          <amount/>
+          <rate/>
+          <fee/>
+        </SurchargeInfo>
+        <CreditCardInfo>
+          <cardNumber>4444333322221111</cardNumber>
+          <expiryDate>01/14</expiryDate>
+          <cvv>123</cvv>
+          <cardHolderName>mmm</cardHolderName>
+          <xID/>
+          <CAVV/>
+          <SLI/>
+          <PARes/>
+          <VERes/>
+          <MpiECI/>
+        </CreditCardInfo>
+        <BuyerInfo>
+          <firstName>James</firstName>
+          <lastName>Michael</lastName>
+          <zipCode>3000</zipCode>
+          <town>Melbourne</town>
+          <billingCountry>AU</billingCountry>
+          <deliveryCountry>AU</deliveryCountry>
+          <emailAddress>jamesk@securepay.com.au</emailAddress>
+          <ip>150.101.153.111</ip>
+        </BuyerInfo>
+      </Txn>
+    </TxnList>
+  </Payment>
+</SecurePayMessage>
+
+
+Sample request:
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<SecurePayMessage>
+  <MessageInfo>
+    <timeoutValue>60</timeoutValue>
+    <apiVersion>xml-4.2</apiVersion>
+  </MessageInfo>
+  <MerchantInfo>
+    <merchantID>ABC0001</merchantID>
+    <password>abc123</password>
+  </MerchantInfo>
+  <RequestType>Payment</RequestType>
+  <Payment>
+    <TxnList count="1">
+      <Txn ID="1">
+        <txnType>0</txnType>
+        <txnSource>23</txnSource>
+        <txnChannel>0</txnChannel>
+        <amount>100</amount>
+        <currency>AUD</currency>
+        <purchaseOrderNo>spnv0026.corporate-test</purchaseOrderNo>
+        <CreditCardInfo>
+          <cardNumber>4444333322221111</cardNumber>
+          <expiryDate>01/14</expiryDate>
+          <cvv>123</cvv>
+          <cardHolderName>mmm</cardHolderName>
+        </CreditCardInfo>
+      </Txn>
+    </TxnList>
+  </Payment>
+</SecurePayMessage>
+
+Sample Response:
+
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<SecurePayMessage>
+    <MessageInfo>
+        <messageID/>
+        <messageTimestamp>20171409205349086000+600</messageTimestamp>
+        <apiVersion>xml-4.2</apiVersion>
+    </MessageInfo>
+    <RequestType>Payment</RequestType>
+    <MerchantInfo>
+        <merchantID>ABC0001</merchantID>
+    </MerchantInfo>
+    <Status>
+        <statusCode>000</statusCode>
+        <statusDescription>Normal</statusDescription>
+    </Status>
+    <Payment>
+        <TxnList count="1">
+            <Txn ID="1">
+                <txnType>0</txnType>
+                <txnSource>23</txnSource>
+                <amount>100</amount>
+                <currency>AUD</currency>
+                <purchaseOrderNo>spnv0026.corporate-test</purchaseOrderNo>
+                <approved>Yes</approved>
+                <responseCode>00</responseCode>
+                <responseText>Approved</responseText>
+                <thinlinkResponseCode>100</thinlinkResponseCode>
+                <thinlinkResponseText>000</thinlinkResponseText>
+                <thinlinkEventStatusCode>000</thinlinkEventStatusCode>
+                <thinlinkEventStatusText>Normal</thinlinkEventStatusText>
+                <settlementDate>20170914</settlementDate>
+                <txnID>236688</txnID>
+                <CreditCardInfo>
+                    <pan>444433...111</pan>
+                    <expiryDate>01/14</expiryDate>
+                    <cardType>6</cardType>
+                    <cardDescription>Visa</cardDescription>
+                </CreditCardInfo>
+            </Txn>
+        </TxnList>
+    </Payment>
+</SecurePayMessage>
