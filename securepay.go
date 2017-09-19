@@ -6,6 +6,7 @@ import (
 	"io"
 	"bytes"
 	"encoding/xml"
+	"fmt"
 )
 
 // A Client manages communication with the SecurePay XML API.
@@ -49,9 +50,13 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 		buf = new(bytes.Buffer)
 		err := xml.NewEncoder(buf).Encode(body)
 		if err != nil {
+			panic(err)
+			fmt.Errorf("Error while encoding", err)
 			return nil, err
 		}
 	}
+
+	fmt.Println(buf)
 
 	req, err := http.NewRequest(method, newURL.String(), buf)
 	if err != nil {

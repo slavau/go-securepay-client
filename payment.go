@@ -11,13 +11,64 @@ type PaymentService struct {
 	client *Client
 }
 
+type SurchargeInfo struct {
+	Amount				string				`xml:"amount"`
+	Rate				string				`xml:"rate"`
+	Fee					string				`xml:"fee"`
+}
+
+type CreditCardInfo struct {
+	CardNumber			string				`xml:"cardNumber"`
+	ExpiryDate			string				`xml:"expiryDate"`
+	Cvv					string				`xml:"cvv"`
+	CardHolderName		string				`xml:"cardHolderName"`
+	XID					string				`xml:"xID"`
+	CAVV				string				`xml:"CAVV"`
+	SLI					string				`xml:"SLI"`
+	PARes				string				`xml:"PARes"`
+	VERes				string				`xml:"VERes"`
+	MpiECI				string				`xml:"MpiECI"`
+}
+
+type BuyerInfo struct {
+	FirstName			string				`xml:"firstName"`
+	LastName			string				`xml:"lastName"`
+	ZipCode				string				`xml:"zipCode"`
+	Town				string				`xml:"town"`
+	BillingCountry		string				`xml:"billingCountry"`
+	DeliveryCountry		string				`xml:"deliveryCountry"`
+	EmailAddress		string				`xml:"emailAddress"`
+	Ip					string				`xml:"ip"`
+}
+
+type Transaction struct {
+	XMLName				xml.Name			`xml:"Txn"`
+	TxnKey				string 				`xml:"txnKey"`
+	TxnType				string 				`xml:"txnType"`
+	TxnSource			string				`xml:"txnSource"`
+	TxnChannel			string				`xml:"txnChannel"`
+	Amount				string				`xml:"amount"`
+	Currency			string 				`xml:"currency"`
+	PurchaseOrderNo		string				`xml:"purchaseOrderNo"`
+	PayorId				string				`xml:"payorId"`
+	TxnId				string 				`xml:"txnId"`
+	PreauthId			string				`xml:"preauthId"`
+
+	SurchargeInfo		*SurchargeInfo		`xml:"SurchargeInfo"`
+	CreditCardInfo		*CreditCardInfo		`xml:"CreditCardInfo"`
+	BuyerInfo			*BuyerInfo			`xml:"BuyerInfo"`
+}
+
+type PaymentMessage struct {
+	Transactions		*Transaction		`xml:"TxnList"`
+}
+
 type PaymentRequest struct {
-	XMLName				xml.Name	`xml:"SecurePayMessage"`
+	XMLName				xml.Name			`xml:"SecurePayMessage"`
 	MessageInfo			*MessageInfo
 	MerchantInfo		*MerchantInfo
-//	RequestType			string		`xml:"RequestType"`
-//	PaymentMessage		*PaymentMessage
-//	TxnList				[]PaymentPransactions
+	RequestType			string				`xml:"RequestType"`
+	PaymentMessage		*PaymentMessage		`xml:"Payment"`
 }
 
 type MessageInfo struct {
@@ -34,7 +85,6 @@ type PaymentResponse struct {
 }
 
 func (r *PaymentService) Create(paymentRequest *PaymentRequest) (*PaymentResponse, error) {
-
 	req, err := r.client.NewRequest("POST", "xmlapi/payment", paymentRequest)
 	if err != nil {
 		return nil, err
