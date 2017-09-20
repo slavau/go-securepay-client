@@ -11,81 +11,106 @@ type PaymentService struct {
 }
 
 type SurchargeInfo struct {
-	Amount				string				`xml:"amount"`
-	Rate				string				`xml:"rate"`
-	Fee					string				`xml:"fee"`
+	Amount string `xml:"amount"`
+	Rate   string `xml:"rate"`
+	Fee    string `xml:"fee"`
 }
 
 type CreditCardInfo struct {
-	CardNumber			string				`xml:"cardNumber"`
-	ExpiryDate			string				`xml:"expiryDate"`
-	Cvv					string				`xml:"cvv"`
-	CardHolderName		string				`xml:"cardHolderName"`
-	XID					string				`xml:"xID"`
-	CAVV				string				`xml:"CAVV"`
-	SLI					string				`xml:"SLI"`
-	PARes				string				`xml:"PARes"`
-	VERes				string				`xml:"VERes"`
-	MpiECI				string				`xml:"MpiECI"`
+	CardNumber     string `xml:"cardNumber"`
+	ExpiryDate     string `xml:"expiryDate"`
+	Cvv            string `xml:"cvv"`
+	CardHolderName string `xml:"cardHolderName"`
+	XID            string `xml:"xID"`
+	CAVV           string `xml:"CAVV"`
+	SLI            string `xml:"SLI"`
+	PARes          string `xml:"PARes"`
+	VERes          string `xml:"VERes"`
+	MpiECI         string `xml:"MpiECI"`
 }
 
 type BuyerInfo struct {
-	FirstName			string				`xml:"firstName"`
-	LastName			string				`xml:"lastName"`
-	ZipCode				string				`xml:"zipCode"`
-	Town				string				`xml:"town"`
-	BillingCountry		string				`xml:"billingCountry"`
-	DeliveryCountry		string				`xml:"deliveryCountry"`
-	EmailAddress		string				`xml:"emailAddress"`
-	Ip					string				`xml:"ip"`
+	FirstName       string `xml:"firstName"`
+	LastName        string `xml:"lastName"`
+	ZipCode         string `xml:"zipCode"`
+	Town            string `xml:"town"`
+	BillingCountry  string `xml:"billingCountry"`
+	DeliveryCountry string `xml:"deliveryCountry"`
+	EmailAddress    string `xml:"emailAddress"`
+	Ip              string `xml:"ip"`
 }
 
 type Transaction struct {
-	Id					int					`xml:"id,attr"`
-	TxnKey				string 				`xml:"txnKey"`
-	TxnType				string 				`xml:"txnType"`
-	TxnSource			string				`xml:"txnSource"`
-	TxnChannel			string				`xml:"txnChannel"`
-	Amount				string				`xml:"amount"`
-	Currency			string 				`xml:"currency"`
-	PurchaseOrderNo		string				`xml:"purchaseOrderNo"`
-	PayorId				string				`xml:"payorId"`
-	TxnId				string 				`xml:"txnId"`
-	PreauthId			string				`xml:"preauthId"`
+	Id              int    `xml:"id,attr"`
+	TxnKey          string `xml:"txnKey"`
+	TxnType         string `xml:"txnType"`
+	TxnSource       string `xml:"txnSource"`
+	TxnChannel      string `xml:"txnChannel"`
+	Amount          string `xml:"amount"`
+	Currency        string `xml:"currency"`
+	PurchaseOrderNo string `xml:"purchaseOrderNo"`
+	PayorId         string `xml:"payorId"`
+	TxnId           string `xml:"txnId"`
+	PreauthId       string `xml:"preauthId"`
 
-	SurchargeInfo		*SurchargeInfo		`xml:"SurchargeInfo"`
-	CreditCardInfo		*CreditCardInfo		`xml:"CreditCardInfo"`
-	BuyerInfo			*BuyerInfo			`xml:"BuyerInfo"`
+	SurchargeInfo  *SurchargeInfo  `xml:"SurchargeInfo"`
+	CreditCardInfo *CreditCardInfo `xml:"CreditCardInfo"`
+	BuyerInfo      *BuyerInfo      `xml:"BuyerInfo"`
 }
 
 type TransactionList struct {
-	Count        		int		      		`xml:"count,attr"`
-	Transaction			*Transaction		`xml:"Txn"`
+	Count       int          `xml:"count,attr"`
+	Transaction *Transaction `xml:"Txn"`
 }
 
 type PaymentMessage struct {
-	Transactions		*TransactionList	`xml:"TxnList"`
+	Transactions *TransactionList `xml:"TxnList"`
 }
 
 type PaymentRequest struct {
-	XMLName				xml.Name			`xml:"SecurePayMessage"`
-	MessageInfo			*MessageInfo
-	MerchantInfo		*MerchantInfo
-	RequestType			string				`xml:"RequestType"`
-	PaymentMessage		*PaymentMessage		`xml:"Payment"`
+	XMLName        xml.Name `xml:"SecurePayMessage"`
+	MessageInfo    *MessageInfo
+	MerchantInfo   *MerchantInfo
+	RequestType    string          `xml:"RequestType"`
+	PaymentMessage *PaymentMessage `xml:"Payment"`
 }
 
 type MessageInfo struct {
-	Timeout				int			`xml:"timeoutValue"`
-	ApiVersion			string		`xml:"apiVersion"`
+	Timeout    int    `xml:"timeoutValue"`
+	ApiVersion string `xml:"apiVersion"`
 }
 
 type MerchantInfo struct {
-	MerchantId			string		`xml:"merchantID"`
-	Password			string		`xml:"password"`
+	MerchantId string `xml:"merchantID"`
+	Password   string `xml:"password"`
+}
+
+type Status struct {
+	StatusCode        string `xml:"statusCode"`
+	StatusDescription string `xml:"statusDescription"`
+}
+
+type ResponseTransaction struct {
+	PurchaseOrderNo string `xml:"purchaseOrderNo"`
+	Approved        string `xml:"approved"`
+	ResponseCode    string `xml:"responseCode"`
+	ResponseText    string `xml:"responseText"`
+	SettlementDate  string `xml:"settlementDate"`
+	TxnID           string `xml:"txnID"`
+}
+
+type ResponseTxnList struct {
+	Count               int                  `xml:"count,attr"`
+	ResponseTransaction *ResponseTransaction `xml:"Txn"`
+}
+
+type ResponseDetails struct {
+	TxnList *ResponseTxnList `xml:"TxnList"`
 }
 
 type PaymentResponse struct {
+	Status          *Status          `xml:"Status"`
+	ResponseDetails *ResponseDetails `xml:"Payment"`
 }
 
 func (r *PaymentService) Create(paymentRequest *PaymentRequest) (*PaymentResponse, error) {
@@ -105,7 +130,6 @@ func (r *PaymentService) Create(paymentRequest *PaymentRequest) (*PaymentRespons
 		return nil, fmt.Errorf("could not read the returned data")
 	}
 
-	fmt.Println(string(responseData))
 	paymentResponse := new(PaymentResponse)
 	err = xml.Unmarshal(responseData, paymentResponse)
 	if err != nil {

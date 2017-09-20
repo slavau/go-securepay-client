@@ -1,21 +1,20 @@
 package securepay
 
 import (
-	"net/http"
-	"net/url"
-	"io"
 	"bytes"
 	"encoding/xml"
-	"fmt"
+	"io"
+	"net/http"
+	"net/url"
 )
 
 // A Client manages communication with the SecurePay XML API.
 type Client struct {
-	client *http.Client
+	client  *http.Client
 	baseURL *url.URL
 
 	// Services used for talking to different parts of the JIRA API.
-	Payment          *PaymentService
+	Payment *PaymentService
 }
 
 func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
@@ -29,7 +28,7 @@ func NewClient(httpClient *http.Client, baseURL string) (*Client, error) {
 	}
 
 	c := &Client{
-		client: httpClient,
+		client:  httpClient,
 		baseURL: parsedBaseURL,
 	}
 
@@ -50,12 +49,9 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 		buf = new(bytes.Buffer)
 		err := xml.NewEncoder(buf).Encode(body)
 		if err != nil {
-			fmt.Println(err)
 			return nil, err
 		}
 	}
-
-	fmt.Println(buf)
 
 	req, err := http.NewRequest(method, newURL.String(), buf)
 	if err != nil {
@@ -74,4 +70,3 @@ func (c *Client) Perform(req *http.Request) (*http.Response, error) {
 
 	return res, nil
 }
-
