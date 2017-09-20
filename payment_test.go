@@ -34,6 +34,7 @@ func TestPaymentMakeOnceOffSuccess(t *testing.T) {
 	}
 
 	transaction := &Transaction{
+		Id: 1,
 		TxnType:   "0",
 		TxnSource: "23",
 		TxnChannel: "0",
@@ -45,8 +46,13 @@ func TestPaymentMakeOnceOffSuccess(t *testing.T) {
 		BuyerInfo: buyerInfo,
 	}
 
+	transactionList := &TransactionList{
+		Count: 1,
+		Transaction: transaction,
+	}
+
 	paymentMessage := &PaymentMessage{
-		Transactions: transaction,
+		Transactions: transactionList,
 	}
 
 	paymentRequest := &PaymentRequest{

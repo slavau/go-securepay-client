@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 )
 
-
 type PaymentService struct {
 	client *Client
 }
@@ -42,7 +41,7 @@ type BuyerInfo struct {
 }
 
 type Transaction struct {
-	XMLName				xml.Name			`xml:"Txn"`
+	Id					int					`xml:"id,attr"`
 	TxnKey				string 				`xml:"txnKey"`
 	TxnType				string 				`xml:"txnType"`
 	TxnSource			string				`xml:"txnSource"`
@@ -59,8 +58,13 @@ type Transaction struct {
 	BuyerInfo			*BuyerInfo			`xml:"BuyerInfo"`
 }
 
+type TransactionList struct {
+	Count        		int		      		`xml:"count,attr"`
+	Transaction			*Transaction		`xml:"Txn"`
+}
+
 type PaymentMessage struct {
-	Transactions		*Transaction		`xml:"TxnList"`
+	Transactions		*TransactionList	`xml:"TxnList"`
 }
 
 type PaymentRequest struct {

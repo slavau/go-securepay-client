@@ -50,8 +50,7 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 		buf = new(bytes.Buffer)
 		err := xml.NewEncoder(buf).Encode(body)
 		if err != nil {
-			panic(err)
-			fmt.Errorf("Error while encoding", err)
+			fmt.Println(err)
 			return nil, err
 		}
 	}
