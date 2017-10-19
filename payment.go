@@ -68,7 +68,7 @@ type PaymentMessage struct {
 }
 
 type PaymentRequest struct {
-	XMLName        xml.Name `xml:"SecurePayMessage"`
+	XMLName        xml.Name        `xml:"SecurePayMessage"`
 	MessageInfo    *MessageInfo
 	MerchantInfo   *MerchantInfo
 	RequestType    string          `xml:"RequestType"`
@@ -111,6 +111,44 @@ type ResponseDetails struct {
 type PaymentResponse struct {
 	Status          *Status          `xml:"Status"`
 	ResponseDetails *ResponseDetails `xml:"Payment"`
+}
+
+func (r *PaymentService) BuildPaymentRequest(merchantId, password, purchaseOrderNumber, amount, creditCardNo,
+expiryMonth, expiryYear string) (*PaymentRequest, error) {
+
+	merchantInfo := &MerchantInfo{MerchantId: merchantId, Password: password}
+	creditCardInfo := &CreditCardInfo{
+		CardNumber: creditCardNo,
+		ExpiryDate: expiryMonth + "/" + expiryYear,
+	}
+	transaction := &Transaction{
+		Id:              1,
+		TxnType:         "0",
+		TxnSource:       "23",
+		TxnChannel:      "0",
+		Amount:          amount,
+		Currency:        "AUD",
+		PurchaseOrderNo: purchaseOrderNumber,
+
+		CreditCardInfo: creditCardInfo,
+	}
+
+	transactionList := &TransactionList{
+		Count:       1,
+		Transaction: transaction,
+	}
+
+	paymentMessage := &PaymentMessage{
+		Transactions: transactionList,
+	}
+
+	paymentRequest := &PaymentRequest{
+		RequestType:    "Payment",
+		MerchantInfo:   merchantInfo,
+		PaymentMessage: paymentMessage,
+	}
+
+	return paymentRequest, nil
 }
 
 func (r *PaymentService) Create(paymentRequest *PaymentRequest) (*PaymentResponse, error) {
